@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1a2e1a">
+    <title>مهارات كرة القدم التفاعلية</title>
+    <style>
+        :root {
+            --page: #1a2e1a;
+            --green: #1e4620;
+            --pitch: #388e3c;
+            --light-green: #a5d6a7;
+            --gold: #ffe082;
+            --ink: #1b5e20;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 12px;
+            overflow-x: hidden;
+            background: var(--page);
+            color: #333;
+        }
+
+        button, summary {
+            font: inherit;
+        }
+
+        button:focus-visible, summary:focus-visible, [tabindex="0"]:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .app-container {
+            display: flex;
+            width: min(100%, 430px);
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #1e4620;
+            border-radius: 30px;
+            background: #f0f7f0;
+            box-shadow: 0 15px 35px rgb(0 0 0 / 40%);
+        }
+
+        .app-header {
+            padding: 23px 20px 20px;
+            border-bottom: 3px solid #143d16;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: #fff;
+            text-align: center;
+        }
+
+        .header-kicker {
+            margin-bottom: 6px;
+            color: #c8e6c9;
+            font-size: 0.71rem;
+            font-weight: 700;
+        }
+
+        .app-header h1 {
+            margin-bottom: 6px;
+            font-size: clamp(1.3rem, 6vw, 1.55rem);
+            font-weight: 800;
+        }
+
+        .app-header p {
+            color: #eef8ee;
+            font-size: 0.81rem;
+            line-height: 1.65;
+        }
+
+        .tactics-section {
+            padding: 15px;
+            margin: 15px;
+            border-radius: 20px;
+            background: var(--green);
+            color: #fff;
+        }
+
+        .section-title {
+            margin-bottom: 6px;
+            color: var(--light-green);
+            font-size: 0.91rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .section-hint {
+            margin-bottom: 12px;
+            color: #e5f2e5;
+            font-size: 0.73rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .team-fact {
+            padding: 8px;
+            margin-bottom: 11px;
+            border: 1px solid rgb(255 255 255 / 16%);
+            border-radius: 9px;
+            background: rgb(255 255 255 / 8%);
+            color: #eff8ef;
+            font-size: 0.76rem;
+            line-height: 1.55;
+            text-align: center;
+        }
+
+        .team-fact strong {
+            color: var(--gold);
+            font-size: 0.92rem;
+        }
+
+        .skill-selector {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
+            margin-bottom: 10px;
+        }
+
+        .skill-button {
+            min-height: 42px;
+            padding: 7px;
+            border: 1px solid rgb(255 255 255 / 20%);
+            border-radius: 9px;
+            background: rgb(255 255 255 / 7%);
+            color: #f2f8f2;
+            cursor: pointer;
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+
+        .skill-button[aria-pressed="true"] {
+            border-color: var(--gold);
+            background: var(--gold);
+            color: #263629;
+        }
+
+        .skill-description {
+            padding: 9px 10px;
+            margin: 0 0 9px;
+            border-right: 3px solid var(--gold);
+            border-radius: 7px;
+            background: rgb(0 0 0 / 15%);
+            color: #eff8ef;
+            font-size: 0.75rem;
+            line-height: 1.65;
+        }
+
+        .pitch.demonstrating .player,
+        .pitch.demonstrating .ball-node { transition: transform 0.75s ease; }
+
+        .pitch-frame {
+            padding: 4px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            border: 1px solid rgb(255 255 255 / 30%);
+            border-radius: 12px;
+            background: #347d39;
+        }
+
+        .pitch {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: var(--pitch);
+            direction: ltr;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .pitch-marking {
+            fill: none;
+            stroke: rgb(255 255 255 / 88%);
+            stroke-width: 1.5;
+        }
+
+        .player {
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .player:active {
+            cursor: grabbing;
+        }
+
+        .player circle {
+            stroke: #fff;
+            stroke-width: 1.4;
+        }
+
+        .player.attacker circle { fill: #e53935; }
+        .player.defender circle { fill: #1e88e5; }
+
+        .player text {
+            fill: #fff;
+            font-size: 7px;
+            font-weight: 800;
+            pointer-events: none;
+        }
+
+        .ball-node {
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .ball-node:active { cursor: grabbing; }
+
+        .ball-node circle {
+            fill: #fff;
+            stroke: #222;
+            stroke-width: 1.2;
+        }
+
+        .ball-node path {
+            fill: #222;
+            pointer-events: none;
+        }
+
+        .pitch-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px 13px;
+            margin: 8px 0 10px;
+            color: #dceedd;
+            font-size: 0.68rem;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-dot {
+            width: 11px;
+            height: 11px;
+            border: 1px solid #fff;
+            border-radius: 50%;
+            background: #e53935;
+        }
+
+        .legend-dot.defender { background: #1e88e5; }
+        .legend-dot.ball { background: #fff; }
+
+        .tactics-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .control-button {
+            flex: 1;
+            min-height: 41px;
+            padding: 8px 6px;
+            border: 1px solid rgb(255 255 255 / 22%);
+            border-radius: 9px;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .control-button:hover { background: rgb(255 255 255 / 9%); }
+        .control-button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+        .control-button.primary {
+            border-color: transparent;
+            background: var(--gold);
+            color: #303b34;
+        }
+
+        .control-button.primary:hover { background: #ffd54f; }
+
+        .practice-feedback {
+            padding: 9px;
+            margin-top: 9px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            line-height: 1.6;
+            font-weight: 700;
+            background: #fff;
+            color: #49564b;
+        }
+
+        .practice-feedback[hidden] { display: none; }
+        .practice-feedback.correct { background: #e8f5e9; color: #1b5e20; }
+        .practice-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+        .info-section {
+            padding: 0 15px 4px;
+        }
+
+        .accordion-item {
+            margin-bottom: 9px;
+            overflow: hidden;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 2px 6px rgb(0 0 0 / 5%);
+        }
+
+        .accordion-item summary {
+            display: flex;
+            min-height: 48px;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            color: #1b5e20;
+            cursor: pointer;
+            font-size: 0.84rem;
+            font-weight: 800;
+            list-style: none;
+        }
+
+        .accordion-item summary::-webkit-details-marker { display: none; }
+        .accordion-item summary:hover { background: #f4fbf4; }
+        .accordion-item summary::after { content: "＋"; color: #388e3c; }
+        .accordion-item[open] summary::after { content: "−"; }
+
+        .accordion-content {
+            padding: 12px 14px 14px;
+            border-top: 1px solid #edf4ed;
+            color: #505850;
+            font-size: 0.76rem;
+            line-height: 1.75;
+        }
+
+        .law-card {
+            padding: 9px;
+            margin-bottom: 8px;
+            border-right: 3px solid #4caf50;
+            border-radius: 5px;
+            background: #f1f8e9;
+        }
+
+        .law-card:last-child { margin-bottom: 0; }
+
+        .app-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+            padding: 14px;
+            margin: 10px 15px 15px;
+            border-radius: 15px;
+            background: #1b5e20;
+            color: #fff;
+            font-size: 0.76rem;
+            text-align: center;
+        }
+
+        .footer-title {
+            grid-column: 1 / -1;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgb(255 255 255 / 13%);
+            color: var(--gold);
+            font-weight: 800;
+        }
+
+        .footer-item {
+            padding: 7px 5px;
+            border-radius: 8px;
+            background: rgb(255 255 255 / 8%);
+        }
+
+        .footer-label { color: #a5d6a7; font-size: 0.66rem; }
+        .footer-value { font-weight: 700; }
+
+        @media (max-width: 350px) {
+            body { padding: 10px 7px; }
+            .app-container { border-width: 3px; border-radius: 24px; }
+            .tactics-section { padding: 12px; margin: 11px; }
+            .player text { font-size: 7px; }
+            .control-button { font-size: 0.68rem; }
+            .info-section { padding-right: 11px; padding-left: 11px; }
+            .app-footer { margin-right: 11px; margin-left: 11px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app-container">
+        <header class="app-header">
+            <div class="header-kicker">التربية البدنية · 3/3</div>
+            <h1>مهارات كرة القدم</h1>
+            <p>اختاري مهارة، شاهدي طريقة تطبيقها، ثم جرّبيها بنفسك على الملعب.</p>
+        </header>
+
+        <section class="tactics-section" aria-labelledby="tacticsTitle">
+            <h2 class="section-title" id="tacticsTitle">اختاري مهارة كرة القدم</h2>
+            <p class="team-fact"><strong>عدد لاعبي الفريق: 11 لاعباً</strong><br>منهم حارس مرمى واحد. الرسم أدناه نموذج مصغر للتدريب وليس تشكيلة كاملة.</p>
+            <div class="skill-selector" role="group" aria-label="اختيار مهارة كرة القدم">
+                <button class="skill-button" type="button" data-skill="passing" aria-pressed="true">التمرير</button>
+                <button class="skill-button" type="button" data-skill="shooting" aria-pressed="false">التصويب</button>
+                <button class="skill-button" type="button" data-skill="dribbling" aria-pressed="false">المراوغة</button>
+                <button class="skill-button" type="button" data-skill="defending" aria-pressed="false">الدفاع</button>
+            </div>
+            <p class="skill-description" id="skillDescription" aria-live="polite"></p>
+            <div class="tactics-controls" style="margin-bottom:10px">
+                <button class="control-button primary" id="showApplication" type="button">اعرض تطبيق المهارة</button>
+                <button class="control-button" id="startPractice" type="button">ابدأ التطبيق</button>
+            </div>
+            <p class="section-hint" id="demoExplanation" role="status" aria-live="polite"></p>
+            <p class="section-hint" style="margin:0 0 9px">اسحبي اللاعب أو الكرة بإصبعك، أو حددي العنصر واستخدمي مفاتيح الأسهم.</p>
+            <div class="pitch-frame">
+                <svg class="pitch" id="pitch" viewBox="0 0 360 180" role="img" aria-label="ملعب كرة قدم تفاعلي">
+                    <defs>
+                        <pattern id="grassStripes" width="80" height="180" patternUnits="userSpaceOnUse">
+                            <rect width="40" height="180" fill="#ffffff" opacity=".055"/>
+                        </pattern>
+                    </defs>
+                    <rect x="0" y="0" width="360" height="180" rx="5" fill="#388e3c"/>
+                    <rect x="0" y="0" width="360" height="180" rx="5" fill="url(#grassStripes)"/>
+                    <rect class="pitch-marking" x="8" y="8" width="344" height="164" rx="2"/>
+                    <line class="pitch-marking" x1="180" y1="8" x2="180" y2="172"/>
+                    <circle class="pitch-marking" cx="180" cy="90" r="25"/>
+                    <circle cx="180" cy="90" r="1.8" fill="#fff"/>
+                    <rect class="pitch-marking" x="8" y="48" width="48" height="84"/>
+                    <rect class="pitch-marking" x="8" y="68" width="19" height="44"/>
+                    <rect class="pitch-marking" x="304" y="48" width="48" height="84"/>
+                    <rect class="pitch-marking" x="333" y="68" width="19" height="44"/>
+                    <path class="pitch-marking" d="M56 75a16 16 0 0 1 0 30M304 75a16 16 0 0 0 0 30"/>
+                    <g class="player attacker" data-node="player-1" transform="translate(122 54)" tabindex="0" role="button" aria-label="المهاجم واحد، اسحب لتغيير موقعه">
+                        <circle r="11"/><text text-anchor="middle" dominant-baseline="central">م1</text>
+                    </g>
+                    <g class="player attacker" data-node="player-2" transform="translate(145 127)" tabindex="0" role="button" aria-label="المهاجم اثنان، اسحب لتغيير موقعه">
+                        <circle r="11"/><text text-anchor="middle" dominant-baseline="central">م2</text>
+                    </g>
+                    <g class="player defender" data-node="player-3" transform="translate(233 68)" tabindex="0" role="button" aria-label="المدافع واحد، اسحب لتغيير موقعه">
+                        <circle r="11"/><text text-anchor="middle" dominant-baseline="central">د1</text>
+                    </g>
+                    <g class="player defender" data-node="player-4" transform="translate(314 90)" tabindex="0" role="button" aria-label="حارس المرمى، اسحب لتغيير موقعه">
+                        <circle r="12"/><text text-anchor="middle" dominant-baseline="central" style="font-size:5.5px">حارس</text>
+                    </g>
+                    <g class="ball-node" data-node="ball" transform="translate(83 94)" tabindex="0" role="button" aria-label="الكرة، اسحب لتغيير موقعها">
+                        <circle r="8"/>
+                        <path d="m-2-3 3-1 3 2-1 3-3 1-3-2zM-6 0l4-1M4-2l3-2M1 5l1 3"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="pitch-legend" aria-label="مفتاح ألوان الملعب">
+                <span class="legend-item"><span class="legend-dot"></span>مهاجم</span>
+                <span class="legend-item"><span class="legend-dot defender"></span>مدافع</span>
+                <span class="legend-item"><span class="legend-dot ball"></span>الكرة</span>
+            </div>
+            <div class="tactics-controls">
+                <button class="control-button primary" id="checkApplication" type="button" disabled>تحققي من التطبيق</button>
+                <button class="control-button" id="resetPitch" type="button">إعادة المحاولة</button>
+            </div>
+            <p class="practice-feedback" id="practiceFeedback" role="status" aria-live="polite" hidden></p>
+        </section>
+
+        <section class="info-section" aria-label="شرح قوانين كرة القدم">
+            <details class="accordion-item">
+                <summary>📋 قوانين أساسية في كرة القدم</summary>
+                <div class="accordion-content">
+                    <div class="law-card"><b>عدد اللاعبين:</b> يتكون الفريق من 11 لاعباً كحد أقصى داخل الملعب، أحدهم حارس مرمى. ولا تبدأ المباراة أو تستمر إذا قلّ عدد الفريق عن 7 لاعبين.</div>
+                    <div class="law-card"><b>التبديلات:</b> عدد التبديلات المسموح بها يعتمد على لائحة المسابقة. تسمح كثير من المسابقات الرسمية بخمسة تبديلات، عادةً عبر ثلاث فرص أثناء اللعب إضافة إلى الاستراحة؛ تحققي من لائحة البطولة.</div>
+                    <div class="law-card"><b>مدة المباراة:</b> شوطان، مدة كل منهما 45 دقيقة، مع وقت بدل ضائع يحدده الحكم. وقد تمتد مباريات خروج المغلوب إلى وقت إضافي أو ركلات ترجيح حسب نظام المسابقة.</div>
+                </div>
+            </details>
+            <details class="accordion-item">
+                <summary>🚩 متى يُعاقب التسلل؟</summary>
+                <div class="accordion-content">
+                    <div class="law-card">يكون اللاعب في موقف تسلل إذا كان جزء من رأسه أو جسمه أو قدميه في نصف ملعب المنافس وأقرب إلى خط مرماه من الكرة ومن ثاني آخر منافس لحظة لعب زميله الكرة، مع استثناء خط المنتصف واليدين والذراعين.</div>
+                    <div class="law-card">مجرد الوقوف في موقف تسلل ليس مخالفة؛ تُحتسب المخالفة فقط إذا شارك اللاعب في اللعب النشط، مثل لمس الكرة أو التأثير في منافس.</div>
+                    <div class="law-card">لا يوجد تسلل مباشرةً عند استلام الكرة من ركلة مرمى أو رمية تماس أو ركلة ركنية.</div>
+                </div>
+            </details>
+            <details class="accordion-item">
+                <summary>⚖️ ما الفرق بين الخطأ والبطاقة؟</summary>
+                <div class="accordion-content">
+                    الحكم يقرر استئناف اللعب بركلة حرة مباشرة أو غير مباشرة أو ركلة جزاء بحسب نوع المخالفة ومكانها. وقد يوجه إنذاراً بالبطاقة الصفراء أو طرداً بالبطاقة الحمراء بحسب طبيعة السلوك وشدته؛ وليست كل مخالفة مصحوبة ببطاقة.
+                </div>
+            </details>
+        </section>
+
+        <footer class="app-footer">
+            <div class="footer-title">مهارات كرة القدم</div>
+            <div class="footer-item">
+                <div class="footer-label">الطالبة</div>
+                <div class="footer-value">رغد العتيبي</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">الفصل</div>
+                <div class="footer-value">3/3</div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        (() => {
+            const pitch = document.getElementById("pitch");
+            const nodes = [...pitch.querySelectorAll("[data-node]")];
+            const nodeById = new Map(nodes.map((node) => [node.dataset.node, node]));
+            const initialPositions = new Map(nodes.map((node) => [node.dataset.node, node.getAttribute("transform")]));
+            const skillDescription = document.getElementById("skillDescription");
+            const demoExplanation = document.getElementById("demoExplanation");
+            const feedback = document.getElementById("practiceFeedback");
+            const checkButton = document.getElementById("checkApplication");
+            let activeNode = null;
+            let selectedSkill = "passing";
+            let practiceStarted = false;
+
+            const skills = {
+                passing: {
+                    description: "التمرير: أرسلي الكرة لزميلة قريبة أو في مساحة مناسبة حتى يتمكن فريقك من مواصلة اللعب.",
+                    demonstration: "شاهدِي: المهاجمة (م1) تمرر الكرة إلى زميلتها (م2). في التطبيق، قرّبي الكرة من م1 ثم ضعيها عند م2.",
+                    demo: { "player-1": [95, 90], "player-2": [265, 90], "player-3": [202, 48], "player-4": [314, 90], ball: [265, 90] },
+                    start: { "player-1": [83, 90], "player-2": [274, 90], "player-3": [205, 48], "player-4": [314, 90], ball: [83, 90] },
+                    success: () => distance("ball", "player-2") < 24,
+                    successText: "أحسنتِ! وصلت الكرة إلى زميلتك، وهذا تطبيق صحيح للتمرير.",
+                    failureText: "لم تصل الكرة إلى زميلتك بعد. ابدئي بالكرة قرب م1 ثم اسحبيها إلى قرب م2."
+                },
+                shooting: {
+                    description: "التصويب: وجّهي الكرة نحو المرمى وحاولي إرسالها بين القائمين.",
+                    demonstration: "شاهدِي: المهاجمة تصوب الكرة إلى المرمى الموجود في يمين الملعب. في التطبيق، ضعي الكرة داخل المرمى.",
+                    demo: { "player-1": [272, 90], "player-2": [221, 132], "player-3": [237, 66], "player-4": [337, 90], ball: [343, 90] },
+                    start: { "player-1": [273, 90], "player-2": [220, 132], "player-3": [230, 66], "player-4": [338, 90], ball: [270, 90] },
+                    success: () => {
+                        const ball = position("ball");
+                        return ball.x >= 336 && ball.y >= 70 && ball.y <= 110;
+                    },
+                    successText: "تصويبة ناجحة! أصبحت الكرة داخل منطقة المرمى بين القائمين.",
+                    failureText: "الكرة لم تدخل المرمى. اسحبيها إلى يمين الملعب بين القائمين (تقريباً x من 336 إلى 350 و y من 70 إلى 110)."
+                },
+                dribbling: {
+                    description: "المراوغة: تحكمي بالكرة وحرّكيها معك لتجاوز المدافع مع إبقائها قريبة من قدمك.",
+                    demonstration: "شاهدِي: تتحرك المهاجمة والكرة معاً لتجاوز المدافع. في التطبيق، حرّكي م1 والكرة نحو المرمى مع إبقائهما متقاربتين.",
+                    demo: { "player-1": [260, 90], "player-2": [119, 135], "player-3": [207, 90], "player-4": [314, 90], ball: [260, 90] },
+                    start: { "player-1": [90, 90], "player-2": [120, 135], "player-3": [205, 90], "player-4": [314, 90], ball: [90, 90] },
+                    success: () => position("player-1").x > 230 && distance("ball", "player-1") < 20,
+                    successText: "ممتاز! تقدمتِ بالكرة وتجاوزتِ المدافع مع إبقائها قريبة.",
+                    failureText: "لإتمام المراوغة، حرّكي م1 والكرة إلى ما بعد المدافع (أكثر من x=230) مع إبقاء الكرة على بعد أقل من 20 وحدة."
+                },
+                defending: {
+                    description: "الدفاع: تمركزي بين الكرة والمرمى، واقتربي من حاملة الكرة للحد من تقدمها.",
+                    demonstration: "شاهدِي: المدافعة (د1) تقف بين الكرة والمرمى وقريبة من الكرة. في التطبيق، حرّكي د1 إلى هذا الموقع.",
+                    demo: { "player-1": [125, 55], "player-2": [120, 135], "player-3": [276, 90], "player-4": [337, 90], ball: [245, 90] },
+                    start: { "player-1": [120, 55], "player-2": [120, 135], "player-3": [110, 90], "player-4": [337, 90], ball: [245, 90] },
+                    success: () => {
+                        const defender = position("player-3");
+                        const ball = position("ball");
+                        return defender.x > ball.x && defender.x < 337 && Math.abs(defender.y - ball.y) < 22;
+                    },
+                    successText: "تمركز دفاعي صحيح! أصبحت المدافعة بين الكرة والمرمى وقريبة من مسارها.",
+                    failureText: "ضعي د1 بين الكرة والمرمى (يمين الكرة وقبل x=337) واجعليها قريبة من مسارها."
+                }
+            };
+
+            function position(id) {
+                const matrix = nodeById.get(id).transform.baseVal.consolidate()?.matrix;
+                return matrix ? { x: matrix.e, y: matrix.f } : { x: 0, y: 0 };
+            }
+
+            function distance(firstId, secondId) {
+                const first = position(firstId);
+                const second = position(secondId);
+                return Math.hypot(first.x - second.x, first.y - second.y);
+            }
+
+            function setPositions(positions) {
+                for (const [id, [x, y]] of Object.entries(positions)) {
+                    nodeById.get(id).setAttribute("transform", `translate(${x} ${y})`);
+                }
+            }
+
+            function restoreInitialPositions() {
+                for (const [id, transform] of initialPositions) {
+                    nodeById.get(id).setAttribute("transform", transform);
+                }
+            }
+
+            function clearFeedback() {
+                feedback.hidden = true;
+                feedback.textContent = "";
+                feedback.className = "practice-feedback";
+            }
+
+            function pointInPitch(event) {
+                const point = pitch.createSVGPoint();
+                point.x = event.clientX;
+                point.y = event.clientY;
+                const matrix = pitch.getScreenCTM();
+                return matrix ? point.matrixTransform(matrix.inverse()) : null;
+            }
+
+            function startDrag(event) {
+                activeNode = event.currentTarget;
+                activeNode.setPointerCapture(event.pointerId);
+                event.preventDefault();
+                clearFeedback();
+            }
+
+            function moveNode(event) {
+                if (activeNode !== event.currentTarget) return;
+                const point = pointInPitch(event);
+                if (!point) return;
+                const isBall = activeNode.classList.contains("ball-node");
+                const margin = isBall ? 9 : 13;
+                const x = Math.max(margin, Math.min(360 - margin, point.x));
+                const y = Math.max(margin, Math.min(180 - margin, point.y));
+                activeNode.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+            }
+
+            for (const node of nodes) {
+                node.addEventListener("pointerdown", startDrag);
+                node.addEventListener("pointermove", moveNode);
+                node.addEventListener("pointerup", () => { activeNode = null; });
+                node.addEventListener("pointercancel", () => { activeNode = null; });
+                node.addEventListener("keydown", (event) => {
+                    const directions = {
+                        ArrowUp: [0, -4],
+                        ArrowDown: [0, 4],
+                        ArrowLeft: [-4, 0],
+                        ArrowRight: [4, 0]
+                    };
+                    const [dx, dy] = directions[event.key] || [];
+                    if (dx === undefined) return;
+                    event.preventDefault();
+                    const current = position(node.dataset.node);
+                    const margin = node.classList.contains("ball-node") ? 9 : 13;
+                    const x = Math.max(margin, Math.min(360 - margin, current.x + dx));
+                    const y = Math.max(margin, Math.min(180 - margin, current.y + dy));
+                    node.setAttribute("transform", `translate(${x} ${y})`);
+                    clearFeedback();
+                });
+            }
+
+            document.querySelectorAll(".skill-button").forEach((button) => {
+                button.addEventListener("click", () => {
+                    selectedSkill = button.dataset.skill;
+                    pitch.classList.remove("demonstrating");
+                    document.querySelectorAll(".skill-button").forEach((item) => {
+                        item.setAttribute("aria-pressed", String(item === button));
+                    });
+                    skillDescription.textContent = skills[selectedSkill].description;
+                    demoExplanation.textContent = "";
+                    practiceStarted = false;
+                    checkButton.disabled = true;
+                    restoreInitialPositions();
+                    clearFeedback();
+                });
+            });
+
+            document.getElementById("showApplication").addEventListener("click", () => {
+                const skill = skills[selectedSkill];
+                practiceStarted = false;
+                checkButton.disabled = true;
+                pitch.classList.add("demonstrating");
+                setPositions(skill.demo);
+                demoExplanation.textContent = skill.demonstration;
+                clearFeedback();
+            });
+
+            document.getElementById("startPractice").addEventListener("click", () => {
+                pitch.classList.remove("demonstrating");
+                setPositions(skills[selectedSkill].start);
+                practiceStarted = true;
+                checkButton.disabled = false;
+                demoExplanation.textContent = "حان دورك! اسحبي اللاعبين والكرة لتحقيق المطلوب، ثم اضغطي «تحققي من التطبيق».";
+                clearFeedback();
+            });
+
+            checkButton.addEventListener("click", () => {
+                if (!practiceStarted) return;
+                const skill = skills[selectedSkill];
+                const correct = skill.success();
+                feedback.textContent = correct ? skill.successText : skill.failureText;
+                feedback.className = `practice-feedback ${correct ? "correct" : "incorrect"}`;
+                feedback.hidden = false;
+            });
+
+            document.getElementById("resetPitch").addEventListener("click", () => {
+                pitch.classList.remove("demonstrating");
+                clearFeedback();
+                demoExplanation.textContent = "";
+                if (practiceStarted) {
+                    setPositions(skills[selectedSkill].start);
+                } else {
+                    restoreInitialPositions();
+                }
+            });
+
+            skillDescription.textContent = skills[selectedSkill].description;
+        })();
+    </script>
+</body>
+</html>
